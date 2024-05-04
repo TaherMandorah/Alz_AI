@@ -27,20 +27,29 @@
   </div>
 
   <div class="Result">
-
-
     <!-- Image container -->
     <div class="image-container">
-      <img src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}" class="result-image" onclick="openModal()">
+      <img src="{{ url_for('static', filename='profile_pics/' + (pic if pic else patient.brain_img)) }}" class="result-image" onclick="openModal()">
     </div>
-    <h1> classifier:&nbsp; {{ patient.classifier }}</h1>
-    <h1> accuracy: &nbsp;{{ patient.accuracy }}</h1>
+    <h1> Classifier:&nbsp; {{ patient.classifier }}</h1>
+    <h1> Accuracy:&nbsp;{{ patient.accuracy }}%</h1>
     
     <!-- Modal -->
     <div id="modal01" class="modal" onclick="closeModal()">
       <span class="close">&times;</span>
-      <img class="modal-content" src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}">
+      <img class="modal-content" src="{{ url_for('static', filename='profile_pics/' + (pic if pic else patient.brain_img)) }}">
     </div>
-  </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('modal01').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('modal01').style.display = 'none';
+    }
+</script>
+
   
 {% endblock %}

@@ -36,11 +36,13 @@ def add_patient():
             db.session.add(patient)
             db.session.commit()
             flash('Patient added successfully!', 'success')
-            return redirect(url_for("patients.result", username_id=form.patient_id.data))
+            # Redirect with pic as a query parameter
+            return redirect(url_for("patients.result", username_id=form.patient_id.data, pic=pic))
         else:
             flash('Error: Image file is required.', 'danger')
 
     return render_template("add_patient.html", form=form)
+
             ####################################################
                 # AddPatientForm from forms.py
                 
@@ -74,28 +76,33 @@ def search_patient():
 @patients.route("/profile/<username_id>", methods=["GET", "POST"])
 @login_required
 def profile(username_id):
-    # Query the PatientInfo based on patient_id (assuming it's unique)
+    # Query the PatientInfo based on patient_id
     patient_info = PatientInfo.query.filter_by(patient_id=username_id).first()
     if not patient_info:
         flash("No patient information available.")
         return redirect(url_for("patients.add_patient_info"))
 
-    # Query all related Patient records
-    patients = Patient.query.filter_by(patient_id=username_id).all()
-    
+    # Query all related Patient records and order them by date in ascending order
+    patients = Patient.query.filter_by(patient_id=username_id).order_by(Patient.date.desc()).all()
+    if not patients:
+        flash("No scans found for this patient.")
+        return redirect(url_for("patients.add_patient")) 
+
+    # Create a map of doctors for each patient
+    doctor_map = {patient.id: Doctor.query.get(patient.doctor_id) for patient in patients if patient.doctor_id}
+
     form = UpdateUserForm()
     if form.validate_on_submit():
-        if form.brain_img.data and patients:
+        if form.brain_img.data:
             pic = add_profile_pic(form.brain_img.data, username_id)
-            # Update all patient records with the new picture
             for patient in patients:
                 patient.brain_img = pic
-
         if patient_info:
-            patient_info.username = form.username.data  # Assuming username is in PatientInfo
+            patient_info.username = form.username.data
         db.session.commit()
         flash("Profile Updated Successfully!")
         return redirect(url_for("patients.profile", username_id=username_id))
+
     elif request.method == "GET" and patient_info:
         form.username.data = patient_info.username
 
@@ -103,33 +110,33 @@ def profile(username_id):
     if form2.validate_on_submit():
         return redirect(url_for("patients.result", username_id=username_id))
     
-    return render_template("profile.html", patient_info=patient_info, patients=patients, form=form, form2=form2)
+    return render_template("profile.html", patient_info=patient_info, patients=patients, doctor_map=doctor_map, form=form, form2=form2)
+
+
 
 
 @patients.route("/result/<username_id>", methods=["GET", "POST"])
 @login_required
 def result(username_id):
-    # Query the Patient record
+    pic = request.args.get('pic', None)  # Get pic parameter from query string
+    # Existing code to fetch patient, doctor, and patient_info
     patient = Patient.query.filter_by(patient_id=username_id).first()
     if not patient:
         flash("No patient found with the given ID.", "warning")
-        return redirect(url_for("patients.add_patient"))  # Redirect or handle the error as needed
-
-    # Query the Doctor record
+        return redirect(url_for("patients.add_patient"))
     doctor = Doctor.query.filter_by(id=patient.doctor_id).first()
-
-    # Query the PatientInfo record for personal information
     patient_info = PatientInfo.query.filter_by(patient_id=username_id).first()
     if not patient_info:
         flash("No personal information found for this patient.", "warning")
-        return redirect(url_for("patients.add_patient_info"))  # Adjust as necessary
+        return redirect(url_for("patients.add_patient_info"))
 
     form = ToProfileForm()
     if form.validate_on_submit():
         return redirect(url_for("patients.profile", username_id=username_id))
 
-    # Pass both patient and patient_info objects to the template
-    return render_template("results.html", patient=patient, doctor=doctor, patient_info=patient_info, form=form)
+    # Pass both patient and patient_info objects to the template, along with the pic
+    return render_template("results.html", patient=patient, doctor=doctor, patient_info=patient_info, pic=pic, form=form)
+
 
 @patients.route("/patient_info", methods=["GET", "POST"])
 @login_required
