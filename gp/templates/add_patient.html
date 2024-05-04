@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add any necessary meta tags, title, and links to CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+    <div class="container3">
+        <img class="rec" src="{{ url_for('static', filename='images/Xray1.jpg') }}" width="100%" height="100%">
+    </div>
+
+    <div class="rectangle1">
+        <label>
+            <h3>Add Patient MRI Scans</h3>
+        </label><br>
+        <div class="rectangle2">
+            <form id="uploadForm" method="POST" action="" enctype="multipart/form-data"
+                onsubmit="return validateLogin()">
+                {{ form.hidden_tag() }}
+                <div>
+                    <p>{{ form.patient_id.label }}</p>{{ form.patient_id }}
+                </div>
+        </div>
+        <div class="rectangle3">
+            <!-- Drop area for uploading images -->
+            <label id="drop-area">
+                <!-- <input type="file" accept="image/*" id="input-file" hidden onchange="displayFileName(this)"/> -->
+                {{ form.brain_img(id="input-file", hidden=true, onchange="displayFileName(this)") }}
+                <div id="img-view">
+                    <img id="preview-image" src="{{ url_for('static', filename='images/icon_uplaod.webp') }}">
+                    <div class="file-upload">
+                        <p id="file-name-label">{{ form.brain_img.label}}</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <script>
+            // Function to display the uploaded file name for the brain_img input field
+            function displayFileName(input) {
+                const fileNameLabel = document.getElementById('file-name-label');
+                const targetInput = document.getElementById('{{form.brain_img}}'); // Assuming 'brain_img' is the ID of the input field
+                if (input.files.length > 0) {
+                    fileNameLabel.textContent = input.files[0].name;
+                    targetInput.value = input.files[0].name; // Set the value of the target input field
+                } else {
+                    fileNameLabel.textContent = 'No file chosen';
+                    targetInput.value = ''; // Clear the value of the target input field
+                }
+            }
+        </script>
+        <label>{{ form.submit() }}</label>
+        </form>
+    </div>
+
+
+
+    <script src="{{ url_for('static', filename='js/JS.js') }}"></script>
+
+</body>
+
+</html>
+
+{% endblock %}

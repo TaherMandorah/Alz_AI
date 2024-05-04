@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container3">
+    <img class="rec" src="static\images\Rectangle_12.png" width="100%" height="%"/>
+   </div>
+  
+   <div class="rectangle">
+    <div><h3>Search for Patient File</h3></div>
+    <br>
+  
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+        <p>{{ form.patient_id.label }}</p>{{ form.patient_id(class="form-control", placeholder="Patient ID...") }}
+        </div>
+        {{ form.submit() }}
+        
+    </form>
+  
+  
+   </div>
+{% endblock %}

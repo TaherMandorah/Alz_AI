@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container3">
+  <img class="rec" src="{{ url_for('static', filename='images/Xray.jpg') }}" width="100%">
+  <div class="textInImg">
+    <h1>AI Diagnosis <br>System</h1> <br><br>
+    <p>welcome to our website,
+      dedicated to revolutionizing Alzheimer's disease Diagnosis.<br> We harness the power
+      of artificial intelligence to provide early and accurate detection.</p>
+  </div>
+</div>
+<div class="card">
+  <img src="{{ url_for('static', filename='images/card11.png') }}" width="150px">
+</div>
+<div class="card">
+  <img src="{{ url_for('static', filename='images/card22.png') }}" width="150px">
+</div>
+<div class="card">
+  <img src="{{ url_for('static', filename='images/card33.png') }}" width="150px">
+</div>
+
+{% endblock %}

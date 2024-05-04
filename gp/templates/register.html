@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container0">
+    <img class="regimg" src="{{ url_for('static', filename='images/Neuroquant.jpg') }}" >
+    <div class="inimg">
+        <div class="inimg_con">
+            <h2 class="welcome">Welcome to Alzheimer Diagnosis System</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                {{ form.email.label }}{{ form.email }}<br>
+                {{ form.username.label }}{{ form.username }}<br>
+                {{ form.password.label }}{{ form.password }}<br>
+                {{ form.pass_confirm.label }}{{ form.pass_confirm }}<br>
+                <select name="specialization">
+                    <option value="Radiologist">Radiologist</option>
+                    <option value="Neurologist">Neurologist</option>
+                </select><br>
+                {{ form.submit() }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
