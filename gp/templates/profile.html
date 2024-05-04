@@ -2,109 +2,117 @@
 
 {% block content %}
 
+<style>
+    .container3, .PatientInf, .Results, .history {
+        margin: 20px;
+        padding: 10px;
+    }
+    .card {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        margin-top: 10px;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card-header {
+        background: #e9ecef;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 15px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        font-weight: bold;
+    }
+    .card-body img {
+        width: 100%; /* Adjust based on your need */
+        max-width: 200px;
+        height: auto;
+    }
+    .image-container1 img.result-image1 {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    .image-container1:hover img.result-image1 {
+        transform: scale(1.05);
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
 <div class="container3">
     <img class="Xray1" src="{{ url_for('static', filename='images/Xray1.jpg') }}" width="100%">
 </div>
 
 <div class="PatientInf">
     <div>
-        <h3>Patient Informations</h3>
+        <h3>Patient Information</h3>
+        <p>Patient Name: {{ patient_info.username }}</p>
+        <p>Patient ID: {{ patient_info.patient_id }}</p>
+        <p>Gender: {{ patient_info.gender }}</p>
+        <p>Age: {{ patient_info.age }}</p>
     </div>
 </div>
 
-<div class="Rasault1">
-    <!-- Image container -->
-    <div class="image-container1" onclick="openModal()">
-        <img class="modal-content" src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}"
-            class="result-image1">
-    </div>
-
-    <!-- Modal -->
-    <div id="modal01" class="modal" onclick="closeModal()">
-        <span class="close">&times;</span>
-        <img class="modal-content" src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}">
-    </div>
-
-    <form method="POST" id="profile" action="" enctype="multipart/form-data">
-        {{form.hidden_tag()}}
-        <div>
-            <label>
-                <p>Patient name:</p>
-                {{ form.username(readonly="readonly", value=patient.username, class="text") }}
-            </label>
+<div class="Results">
+    {% for patient in patients %}
+        <div class="image-container1" onclick="openModal('modal{{ loop.index }}')">
+            <img src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}" class="result-image1">
         </div>
 
-
-        <div>
-            <label>
-                <p>Patient ID:</p>
-                {{ form.patient_id(readonly="readonly", value=patient.patient_id, class="text") }}
-            </label>
+        <!-- Modal -->
+        <div id="modal{{ loop.index }}" class="modal" onclick="closeModal('modal{{ loop.index }}')">
+            <span class="close">&times;</span>
+            <img class="modal-content" src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}">
         </div>
-
-        <div class="rectangle3">
-            <!-- Drop area for uploading images -->
-            <label id="drop-area">
-                <!-- <input type="file" accept="image/*" id="input-file" hidden onchange="displayFileName(this)"/> -->
-                {{ form.brain_img(id="input-file", hidden=true, onchange="displayFileName(this)") }}
-                <div id="img-view">
-                    <img id="preview-image" src="{{ url_for('static', filename='images/icon_uplaod.webp') }}">
-                    <div class="file-upload">
-                        <p id="file-name-label">{{ form.brain_img.label}}</p>
-                    </div>
-                </div>
-            </label>
-        </div>
-
-        <script>
-            // Function to display the uploaded file name for the brain_img input field
-            function displayFileName(input) {
-                const fileNameLabel = document.getElementById('file-name-label');
-                const targetInput = document.getElementById('{{form.brain_img}}'); // Assuming 'brain_img' is the ID of the input field
-                if (input.files.length > 0) {
-                    fileNameLabel.textContent = input.files[0].name;
-                    targetInput.value = input.files[0].name; // Set the value of the target input field
-                } else {
-                    fileNameLabel.textContent = 'No file chosen';
-                    targetInput.value = ''; // Clear the value of the target input field
-                }
-            }
-        </script>
-        
-                
-
-    
-        {{ form.submit(id="submit-btn") }}
-    </form>
-    
-
+    {% endfor %}
 </div>
+
 <div class="history">
-    <div class="scan-history">
-        <h4>Scan History</h4>
-        <div class="card-container">
-            {% for scan in scan_history %}
-                <div class="card">
-                    <div class="card-header">Scan Date: {{ scan.scan_date.strftime('%Y/%m/%d') }}</div>
-                    <div class="card-body">
-                        <ul class="info-list">
-                            <li>Doctor: {{ scan.doctor_name }}</li>
-                            <li>Result: {{ scan.result }}</li>
-                            <div class="image-container" >
-                                <form method="POST" class="profile">
-                                    {{ form2.hidden_tag() }}
-                                    {{ form2.submit() }}
-                                  </form>
-                            </div>
-                        </ul>
-                    </div>
+    <h4>Scan History</h4>
+    <div class="card-container">
+        {% for patient in patients %}
+            <div class="card">
+                <div class="card-header">Scan Date: {{ patient.date.strftime('%Y/%m/%d') }}</div>
+                <div class="card-body">
+                    <ul class="info-list">
+                        <li>Image: <img src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}" height="100"></li>
+                        <li>Doctor ID: {{ patient.doctor_id }}</li>  <!-- Assuming doctor_id is available -->
+                    </ul>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
-
-
-
 
 {% endblock %}

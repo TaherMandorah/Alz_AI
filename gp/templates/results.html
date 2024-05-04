@@ -10,13 +10,13 @@
   </div>
 
   <div class="PatientInf2">
-    <h1>Name:&nbsp;&nbsp;{{ patient.username }}</h1>
+    <h1>Name:&nbsp;&nbsp;{{ patient_info.username }}</h1>
     <h1>Patient ID:&nbsp;&nbsp;{{ patient.patient_id }}</h1>
     <h1>Scanned by: Dr.{{doctor.username}}</h1>
     <h1>Scanned on: {{ patient.date.strftime('%Y-%m-%d') }} </h1>
     <h1>Time:{{ patient.date.strftime('%H:%M:%S') }} </h1>
-    <h1>Age:&nbsp;&nbsp;{{ patient.age }}</h1>
-    <h1>Gender:&nbsp;&nbsp;{{ patient.gender }}</h1>
+    <h1>Age:&nbsp;&nbsp;{{ patient_info.age }}</h1>
+    <h1>Gender:&nbsp;&nbsp;{{ patient_info.gender }}</h1>
     <!-- <h1>{{ patient.classifier }}</h1>
     <h1>{{ patient.accuracy }}</h1> -->
     
