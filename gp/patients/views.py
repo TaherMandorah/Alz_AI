@@ -69,7 +69,7 @@ def search_patient():
     form = SearchAddPatientForm()
     if form.validate_on_submit():
         username_id = form.patient_id.data
-        return redirect(url_for("patients.result", username_id=username_id))
+        return redirect(url_for("patients.profile", username_id=username_id))
     return render_template("search_patient.html", form=form)
 
 
