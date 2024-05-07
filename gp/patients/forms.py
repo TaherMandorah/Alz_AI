@@ -42,3 +42,11 @@ class PatientInfoForm(FlaskForm):
     gender = SelectField('gender', choices=[('Male', 'Male'), ('Female', 'Female')])
     age = StringField("Age:", validators=[DataRequired()])
     submit = SubmitField("GG")
+    
+class RequestSearchForm(FlaskForm):
+    patient_id = StringField("Patient ID: ", validators=[DataRequired()])
+    submit = SubmitField('Search')
+    
+class RequestForm(FlaskForm):
+    submit = SubmitField('Request')
+    

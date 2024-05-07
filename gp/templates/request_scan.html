@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <!-- Flash messages display area -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        {{ search_form.hidden_tag() }}
+        {{ search_form.patient_id.label }} {{ search_form.patient_id() }}
+        {{ search_form.submit() }}
+    </form>
+
+    {% if patient_info %}
+        <div>
+            <h2>Patient Information</h2>
+            <p>Name: {{ patient_info.username }}</p>
+            <p>ID: {{ patient_info.patient_id }}</p>
+            <p>Age: {{ patient_info.age }}</p>
+            <p>Gender: {{ patient_info.gender }}</p>
+            
+            <form method="POST">
+                {{ request_form.hidden_tag() }}
+                {{ request_form.submit() }}
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

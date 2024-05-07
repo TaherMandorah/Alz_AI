@@ -1,9 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField,SelectField
 from wtforms.validators import DataRequired, Email, EqualTo
-from wtforms import ValidationError
+from wtforms import ValidationError,HiddenField
 from flask_wtf.file import FileAllowed, FileField
-
 from flask_login import current_user
 from gp.models import Doctor
 
@@ -31,7 +30,8 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register!")
 
 
-# class UpdateUserForm(FlaskForm):
-#     name = StringField('Username', validators=[DataRequired()])
-#     profile = FileField('Update Profile Picteure', validators=[FileAllowed(['png', 'jpg',])])
-#     submit = SubmitField('Update')
+
+
+class SubmitRequestForm(FlaskForm):
+    request_id = HiddenField()  # Hidden field to store the request ID
+    submit = SubmitField('Add Scan')

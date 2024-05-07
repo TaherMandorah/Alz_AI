@@ -1,8 +1,8 @@
 from flask import render_template,url_for,flash,redirect,request,Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from gp import db
-from gp.models import Doctor, Patient
-from gp.doctors.forms import RegistrationForm,LoginForm
+from gp.models import Doctor, Patient ,ScanRequest
+from gp.doctors.forms import RegistrationForm,LoginForm,SubmitRequestForm
 from gp.doctors.picture_handler import add_profile_pic
 
 doctors = Blueprint('doctors',__name__)
@@ -50,11 +50,19 @@ def login():
             return redirect(next)
 
     return render_template('login.html',form=form)
-
-
 # logout
 @doctors.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("core.index"))
+
+@doctors.route("/request_list")
+@login_required
+def request_list():
+    requests = ScanRequest.query.filter_by(requests=False).all()  # Only fetch unprocessed requests
+    forms = {request.id: SubmitRequestForm() for request in requests}  # Dictionary of forms keyed by request id
+    return render_template("request_list.html", requests=requests, forms=forms)
+
+
+

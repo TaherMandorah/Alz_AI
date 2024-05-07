@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Scan Requests</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Scan Date</th>
+                <th>Patient ID</th>
+                <th>Doctor ID</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ request.scan_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ request.patient_id }}</td>
+                <td>{{ request.doctor_id }}</td>
+                <td>{{ 'Pending' if not request.requests else 'Completed' }}</td>
+                <td>
+                    <form action="{{ url_for('patients.add_patient') }}" method="GET">
+                        <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <input type="hidden" name="patient_id" value="{{ request.patient_id }}">
+                        <button type="submit" class="btn btn-primary">Add Scan</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

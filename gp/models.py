@@ -41,6 +41,7 @@ class PatientInfo(db.Model):
 
     # Relationship: One PatientInfo to many Patients
     patients = db.relationship('Patient', backref='patient_info', lazy=True)
+    patient_request = db.relationship('ScanRequest', backref='patient_info', lazy=True)
 
     def __init__(self, username, patient_id, gender, age):
         self.username = username
@@ -62,6 +63,7 @@ class Doctor(db.Model, UserMixin):
 
     # Define the one-to-many relationship
     patients = db.relationship('Patient', backref='doctor', lazy=True)
+    patient_scan = db.relationship('ScanRequest', backref='doctor', lazy=True)
 
     def __init__(self, email, username, password, specialization):
         self.email = email
@@ -75,21 +77,22 @@ class Doctor(db.Model, UserMixin):
     def __repr__(self):
         return f"{self.email}"
     
-class ScanHistory(db.Model):
-    __tablename__ = "scan_history"
+class ScanRequest(db.Model):
+    __tablename__ = "scan_requests"  # Ensure table names are lowercase and snake_case for consistency
     id = db.Column(db.Integer, primary_key=True)
     scan_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    doctor_name = db.Column(db.String(64), nullable=False)
-    result = db.Column(db.String(100), nullable=False)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id'))
-    
+    patient_id = db.Column(db.String(32), db.ForeignKey('patient_info.patient_id'), nullable=False)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'))
+    requests = db.Column(db.Boolean, default=False, nullable=False)  # Boolean column with default False
 
-    def __init__(self, doctor_name, result, patient_id):
-        self.doctor_name = doctor_name
-        self.result = result
+    def __init__(self, patient_id, doctor_id, requests=False):
         self.patient_id = patient_id
+        self.doctor_id = doctor_id
+        self.scan_date = datetime.utcnow()  # Optionally allow passing this as a parameter if needed
+        self.requests = requests  # Initialize with the provided value or default to False
 
     def __repr__(self):
-        return f"Scan History: {self.scan_date}, Doctor: {self.doctor_name}, Result: {self.result}"
+        return f"<ScanRequest(id={self.id}, scan_date={self.scan_date}, patient_id={self.patient_id}, doctor_id={self.doctor_id}, requests={self.requests})>"
+
 
 

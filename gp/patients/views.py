@@ -1,8 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from gp import db
-from gp.models import Doctor, Patient,ScanHistory,PatientInfo
-from gp.patients.forms import AddPatientForm, SearchAddPatientForm, UpdateUserForm,ToProfileForm,ToResultForm,PatientInfoForm
+from gp.models import Doctor, Patient,ScanRequest,PatientInfo
+from gp.patients.forms import AddPatientForm, SearchAddPatientForm, UpdateUserForm,ToProfileForm,ToResultForm,PatientInfoForm,RequestSearchForm,RequestForm
 from gp.patients.picture_handler import add_profile_pic
 from datetime import datetime
 
@@ -10,19 +10,24 @@ from datetime import datetime
 patients = Blueprint("patients", __name__)
 
 
-@patients.route("/patient", methods=["GET", "POST"])
+@patients.route("/add_patient", methods=["GET", "POST"])
 @login_required
 def add_patient():
     form = AddPatientForm()
+    patient_id = request.args.get('patient_id', None)
+    request_id = request.args.get('request_id', None)  # Get the request_id from query parameters
+
+    if patient_id:
+        form.patient_id.data = patient_id
+        form.patient_id.render_kw = {'readonly': True}
+
     if form.validate_on_submit():
         if form.brain_img.data:
-            # Check if there's an existing PatientInfo with the given patient_id
             patient_info = PatientInfo.query.filter_by(patient_id=form.patient_id.data).first()
             if not patient_info:
-                flash('No existing patient info found for this ID. Please register patient information first.', 'warning')
+                flash('No existing patient info found for this ID.', 'warning')
                 return render_template("add_patient.html", form=form)
-            
-            # If patient_info exists, proceed to add the Patient record
+
             pic = add_profile_pic(form.brain_img.data, form.patient_id.data)
             patient = Patient(
                 patient_id=form.patient_id.data,
@@ -30,18 +35,28 @@ def add_patient():
                 date=datetime.utcnow(),
                 classifier="classi",
                 accuracy=99.88,
-                doctor_id=current_user.id  # Assuming current_user.id is correctly used
+                doctor_id=current_user.id
             )
-
             db.session.add(patient)
-            db.session.commit()
-            flash('Patient added successfully!', 'success')
-            # Redirect with pic as a query parameter
+
+            # Update the scan request status if a request_id was provided
+            if request_id:
+                scan_request = ScanRequest.query.get(int(request_id))
+                if scan_request:
+                    scan_request.requests = True
+                    db.session.commit()
+                    flash('Scan added and request marked as completed.', 'success')
+                else:
+                    flash('No matching scan request found.', 'error')
+
             return redirect(url_for("patients.result", username_id=form.patient_id.data, pic=pic))
         else:
             flash('Error: Image file is required.', 'danger')
 
     return render_template("add_patient.html", form=form)
+
+
+
 
             ####################################################
                 # AddPatientForm from forms.py
@@ -56,7 +71,7 @@ def add_patient():
                 
             #########################################################
             # Add a new scan record to the scan history
-            # new_scan = ScanHistory(
+            # new_scan = ScanRequest(
             #     doctor_name=current_user.username,  # Assuming current user is the doctor adding the patient
             #     result="Initial scan result",
             #     patient_id=patient.id
@@ -161,3 +176,33 @@ def patient_info():
     else:
         print("form is not working properly")
     return render_template("patient_info.html", form=form)
+
+@patients.route("/request", methods=["GET", "POST"])
+@login_required
+def request_scan():
+    search_form = RequestSearchForm()
+    request_form = RequestForm()
+
+    if search_form.validate_on_submit() and search_form.submit.data:
+        patient_info = PatientInfo.query.filter_by(patient_id=search_form.patient_id.data).first()
+        if patient_info:
+            return redirect(url_for("patients.request_scan", patient_id=patient_info.patient_id))  # Pass patient_id as query parameter
+        else:
+            flash("No patient found with this ID.", "warning")
+
+    # Checking if 'patient_id' is in query string for continuity in form submissions
+    patient_id = request.args.get('patient_id')
+    if patient_id:
+        patient_info = PatientInfo.query.filter_by(patient_id=patient_id).first()
+        if request_form.validate_on_submit() and request_form.submit.data:
+            if patient_info:
+                new_request = ScanRequest(patient_id=patient_info.patient_id, doctor_id=current_user.id)
+                db.session.add(new_request)
+                db.session.commit()
+                flash("Scan request submitted successfully.", "success")
+                return redirect(url_for("patients.request_scan"))
+            else:
+                flash("Failed to submit request. Patient not found.", "error")
+        return render_template("request_scan.html", search_form=search_form, request_form=request_form, patient_info=patient_info)
+    
+    return render_template("request_scan.html", search_form=search_form, request_form=request_form)
