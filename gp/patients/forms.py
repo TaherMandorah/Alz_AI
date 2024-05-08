@@ -8,7 +8,7 @@ from flask_wtf.file import FileField, FileAllowed
 class AddPatientForm(FlaskForm):
     patient_id = StringField("Patient ID:", validators=[DataRequired()])
     brain_img = FileField("Choose a file", validators=[FileAllowed(["jpg", "png"])])
-    submit = SubmitField("Submit")
+    submit = SubmitField("Scan")
     
                 # Patient class from models.py
                 # id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +41,7 @@ class PatientInfoForm(FlaskForm):
     patient_id = StringField("Patient ID: ", validators=[DataRequired()])
     gender = SelectField('gender', choices=[('Male', 'Male'), ('Female', 'Female')])
     age = StringField("Age:", validators=[DataRequired()])
-    submit = SubmitField("GG")
+    submit = SubmitField("Add")
     
 class RequestSearchForm(FlaskForm):
     patient_id = StringField("Patient ID: ", validators=[DataRequired()])

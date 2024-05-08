@@ -52,18 +52,20 @@ justify-content: center;*/
   }
   .inimg input[type="submit"] {
     padding: 10px;
-    border: none;
-    outline: none;
     width: 15%;
     margin-left: 40%;
     margin-bottom: 3%;
-    background-color: rgb(68, 18, 232);
-    color: white;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     display: flex;
     justify-content: center;
     text-align: center;
     cursor: pointer;
-  }
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 15px;
+}
+
   .inimg a {
     padding: 0px;
   }
@@ -77,7 +79,18 @@ justify-content: center;*/
     margin-left: 16%;
   }
 }
-
+.inimg select {
+  font-size: 15px;
+  width: 20%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
 /*For Tablet View */
 @media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
   .inimg {
@@ -605,11 +618,17 @@ footer a {
   flex-direction: column;
 }
 
+.PatientInf p{
+  color: #000000;
+font-weight: 100;
+}
+
 .PatientInf h3 {
   padding-bottom: 3%;
   font-size: 3vh;
   margin-top: 3%;
-  color: #000000;
+  color: #ff0000;
+  font-weight: bolder;
 }
 
 .PatientInf2 {

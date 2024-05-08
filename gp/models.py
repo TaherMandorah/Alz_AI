@@ -2,34 +2,38 @@ from gp import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
-
+import pytz
 
 @login_manager.user_loader
 def load_user(user_id):
     return Doctor.query.get(int(user_id))
 
+def get_ksa_time():
+    utc_time = datetime.utcnow()
+    ksa_timezone = pytz.timezone('Asia/Riyadh')
+    ksa_time = utc_time.replace(tzinfo=pytz.utc).astimezone(ksa_timezone)
+    return ksa_time
 
 class Patient(db.Model):
     __tablename__ = "patients"
     id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.String(32), db.ForeignKey('patient_info.patient_id'), nullable=False)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date = db.Column(db.DateTime, nullable=False, default=get_ksa_time)
     brain_img = db.Column(db.String(64), nullable=False)
     classifier = db.Column(db.String(32))
     accuracy = db.Column(db.Float)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'))
 
-    def __init__(self, patient_id, brain_img, classifier, accuracy, doctor_id, date):
+    def __init__(self, patient_id, brain_img, classifier, accuracy, doctor_id, date=None):
         self.patient_id = patient_id
         self.brain_img = brain_img
         self.classifier = classifier
         self.accuracy = accuracy
         self.doctor_id = doctor_id
-        self.date = date
+        self.date = date if date else get_ksa_time()
 
     def __repr__(self):
         return f"<Patient {self.id} - {self.patient_id}>"
-
 
 class PatientInfo(db.Model):
     __tablename__ = "patient_info"
@@ -78,21 +82,18 @@ class Doctor(db.Model, UserMixin):
         return f"{self.email}"
     
 class ScanRequest(db.Model):
-    __tablename__ = "scan_requests"  # Ensure table names are lowercase and snake_case for consistency
+    __tablename__ = "scan_requests"
     id = db.Column(db.Integer, primary_key=True)
-    scan_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    scan_date = db.Column(db.DateTime, nullable=False, default=get_ksa_time)
     patient_id = db.Column(db.String(32), db.ForeignKey('patient_info.patient_id'), nullable=False)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'))
-    requests = db.Column(db.Boolean, default=False, nullable=False)  # Boolean column with default False
+    requests = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, patient_id, doctor_id, requests=False):
         self.patient_id = patient_id
         self.doctor_id = doctor_id
-        self.scan_date = datetime.utcnow()  # Optionally allow passing this as a parameter if needed
-        self.requests = requests  # Initialize with the provided value or default to False
+        self.requests = requests
 
     def __repr__(self):
         return f"<ScanRequest(id={self.id}, scan_date={self.scan_date}, patient_id={self.patient_id}, doctor_id={self.doctor_id}, requests={self.requests})>"
-
-
 

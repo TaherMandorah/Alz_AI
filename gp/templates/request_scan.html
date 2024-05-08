@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <!-- Flash messages display area -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
+    <!-- {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
                 <div class="alert alert-{{ category }}">
@@ -11,7 +11,7 @@
                 </div>
             {% endfor %}
         {% endif %}
-    {% endwith %}
+    {% endwith %} -->
 
     <form method="POST">
         {{ search_form.hidden_tag() }}

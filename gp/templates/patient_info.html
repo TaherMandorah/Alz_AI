@@ -1,12 +1,111 @@
 {% extends "base.html" %}
 {% block content %}
+<style>
 
-<form method="POST">
-    {{form.hidden_tag()}}
-    {{form.username.label}}{{form.username}}
-    {{form.patient_id.label}}{{form.patient_id}}
-    {{form.gender.label}}{{form.gender}}
-    {{form.age.label}}{{form.age}}
-    {{form.submit()}}
-</form> 
+    .rect1 {
+        margin-top: 1%;
+        margin-left: 35%;
+        margin-bottom: 10%;
+        border-radius: 10px;
+        border: 5px solid #aba38e;
+        width: 35%;
+        height: 80%;
+        background-color: #f8f8ec;
+        text-align: center;
+      }
+      .rect2 {
+        width: 60%;
+        height: 60%;
+        background: #d8d8d8;
+        border-radius: 10px;
+        border: #566c6e dashed 3px;
+        margin: 5% auto; /* Center horizontally */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+      
+      .rect2 input[type="number"] {
+        margin-top:9%;
+        margin-bottom: 5%;
+        border-radius: 6px;
+        border-color: #000;
+        font-size: 25px;
+        width: 35%;
+        background-color: #ddd5bf;
+      }
+      
+      .rect2 input[type="text"] {
+        margin-top:9%;
+        margin-bottom: 5%;
+        border-radius: 6px;
+        border-color: #000;
+        font-size: 25px;
+        width: 39%;
+        background-color: #ddd5bf;
+      }
+      .rect2 select{
+        margin-top:9%;
+        margin-bottom: 5%;
+        border-radius: 6px;
+        border-color: #000;
+        font-size: 20px;
+        width: 39%;
+        background-color: #ddd5bf;
+      }
+      
+      .rect2 p {
+        margin-left:5%;
+        margin-top: 6%;
+        color: #3e695f;
+        display: inline-block;
+        left: 0px;
+      }
+      
+      .rect1 h3 {
+        margin-top: 3%;
+        color: #852424;
+      }
+      .rect1 input[type="submit"] {
+        font-size: 16px;
+        padding: 1%;
+        width: 20%;
+        margin-top: 5%;
+        border-radius: 10px;
+        cursor: pointer;
+        border-color: #d5cbb0;
+        background-color: #d5cbb0;
+      }
+</style>
+
+
+<div class="container3">
+    <img class="rec" src="{{ url_for('static', filename='images/Xray1.jpg') }}" width="100%" height="100%">
+</div>
+
+<div class="rect1">
+    <label>
+        <h3>Add Patient Information</h3>
+    </label><br>
+    <div class="rect2">
+        <form id="patientinfo" method="POST" action="" enctype="multipart/form-data"
+            onsubmit="return validateLogin()">
+            {{ form.hidden_tag() }}
+            <div>
+                <p>{{form.username.label}}  </p>{{form.username}}
+            </div>
+            <div>
+                <p>{{form.patient_id.label}}&nbsp;&nbsp;&nbsp; </p>{{form.patient_id}}
+            </div>
+            <div>
+                <p>{{form.gender.label}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{{form.gender}}
+            </div>
+            <div>
+                <p>{{form.age.label}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>{{form.age}}
+            </div>            
+    </div>
+    <label>{{ form.submit() }}</label>
+    </form>
+</div>
+
 {% endblock %}

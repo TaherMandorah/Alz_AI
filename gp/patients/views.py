@@ -5,7 +5,13 @@ from gp.models import Doctor, Patient,ScanRequest,PatientInfo
 from gp.patients.forms import AddPatientForm, SearchAddPatientForm, UpdateUserForm,ToProfileForm,ToResultForm,PatientInfoForm,RequestSearchForm,RequestForm
 from gp.patients.picture_handler import add_profile_pic
 from datetime import datetime
+import pytz
 
+def get_ksa_time():
+    utc_time = datetime.utcnow()
+    ksa_timezone = pytz.timezone('Asia/Riyadh')
+    ksa_time = utc_time.replace(tzinfo=pytz.utc).astimezone(ksa_timezone)
+    return ksa_time
 
 patients = Blueprint("patients", __name__)
 
@@ -32,7 +38,7 @@ def add_patient():
             patient = Patient(
                 patient_id=form.patient_id.data,
                 brain_img=pic,
-                date=datetime.utcnow(),
+                date=get_ksa_time(),  # Adjusted to KSA time
                 classifier="classi",
                 accuracy=99.88,
                 doctor_id=current_user.id
@@ -54,6 +60,7 @@ def add_patient():
             flash('Error: Image file is required.', 'danger')
 
     return render_template("add_patient.html", form=form)
+
 
 
 
