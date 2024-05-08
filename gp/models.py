@@ -96,4 +96,3 @@ class ScanRequest(db.Model):
 
     def __repr__(self):
         return f"<ScanRequest(id={self.id}, scan_date={self.scan_date}, patient_id={self.patient_id}, doctor_id={self.doctor_id}, requests={self.requests})>"
-

@@ -1,37 +1,85 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h2>Scan Requests</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Request ID</th>
-                <th>Request Date</th>
-                <th>Patient ID</th>
-                <th>Doctor ID</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for request in requests %}
-            <tr>
-                <td>{{ request.id }}</td>
-                <td>{{ request.scan_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                <td>{{ request.patient_id }}</td>
-                <td>{{ request.doctor_id }}</td>
-                <td>{{ 'Pending' if not request.requests else 'Completed' }}</td>
-                <td>
-                    <form action="{{ url_for('patients.add_patient') }}" method="GET">
-                        <input type="hidden" name="request_id" value="{{ request.id }}">
-                        <input type="hidden" name="patient_id" value="{{ request.patient_id }}">
-                        <button type="submit" class="btn btn-primary">Add Scan</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<br>
+<style>
+    .rectangleRs {
+        padding-bottom: 2%;
+        margin-top: 15%;
+        margin-left: 15%;
+        margin-bottom: 20%;
+        border-radius: 10px;
+        border: 5px solid #aba38e;
+        width: 70%;
+        background-color: #f8f8ec;
+        text-align: center;
+        color: black;
+    }
+    .rectangleRs button[type="submit"] {
+        font-size: 25px;
+        padding: 1%;
+        width: 70%;
+        border-radius: 10px;
+        cursor: pointer;
+        border-color: #D5CBB3;
+        background-color: #d5cbb0;
+    }
+      table {
+        width: 100%;
+      }
+      td {
+        height: 50px;
+        vertical-align: center;
+      }
+      th{
+        height: 70px;
+        vertical-align: top;
+
+      }
+
+      h2{
+        margin-top:1%;
+        margin-bottom:5%;
+      }
+      
+</style>
+<div class="rectangleRs">
+    <div class="container">
+        <h2>Scan Requests</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Request Date</th>
+                    <th>Patient ID</th>
+                    <th>Patient Name</th>  <!-- Added column for Patient Name -->
+                    <th>Doctor ID</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request, patient_info in requests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.scan_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ request.patient_id }}</td>
+                    <td>{{ patient_info.username }}</td>  <!-- Displaying Patient Name -->
+                    <td>{{ request.doctor_id }}</td>
+                    <td>{{ 'Pending' if not request.requests else 'Completed' }}</td>
+                    <td>
+                        <form action="{{ url_for('patients.add_patient') }}" method="GET">
+                            <input type="hidden" name="request_id" value="{{ request.id }}">
+                            <input type="hidden" name="patient_id" value="{{ request.patient_id }}">
+                            <button type="submit" class="btn btn-primary">Add Scan</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+
 {% endblock %}
