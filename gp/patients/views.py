@@ -39,8 +39,8 @@ def add_patient():
                 patient_id=form.patient_id.data,
                 brain_img=pic,
                 date=get_ksa_time(),  # Adjusted to KSA time
-                classifier="classi",
-                accuracy=99.88,
+                classifier="gg",
+                accuracy=69.69,
                 doctor_id=current_user.id
             )
             db.session.add(patient)
@@ -141,11 +141,14 @@ def profile(username_id):
 @login_required
 def result(username_id):
     pic = request.args.get('pic', None)  # Get pic parameter from query string
-    # Existing code to fetch patient, doctor, and patient_info
-    patient = Patient.query.filter_by(patient_id=username_id).first()
+
+    # Query for the latest patient record based on the 'date' field
+    patient = Patient.query.filter_by(patient_id=username_id).order_by(Patient.date.desc()).first()
     if not patient:
         flash("No patient found with the given ID.", "warning")
         return redirect(url_for("patients.add_patient"))
+
+    # Continue with the rest of the existing code
     doctor = Doctor.query.filter_by(id=patient.doctor_id).first()
     patient_info = PatientInfo.query.filter_by(patient_id=username_id).first()
     if not patient_info:
@@ -158,6 +161,7 @@ def result(username_id):
 
     # Pass both patient and patient_info objects to the template, along with the pic
     return render_template("results.html", patient=patient, doctor=doctor, patient_info=patient_info, pic=pic, form=form)
+
 
 
 @patients.route("/patient_info", methods=["GET", "POST"])
@@ -179,7 +183,7 @@ def patient_info():
         )
         db.session.add(patient_info)
         db.session.commit()
-        return redirect(url_for("patients.search_patient"))
+        return redirect(url_for("patients.request_scan"))
     else:
         print("form is not working properly")
     return render_template("patient_info.html", form=form)

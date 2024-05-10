@@ -7,15 +7,16 @@
             <h2 class="welcome">Welcome to Alzheimer Diagnosis System</h2>
             <form method="POST">
                 {{ form.hidden_tag() }}
-                {{ form.email.label }}{{ form.email }}<br>
-                {{ form.username.label }}{{ form.username }}<br>
+                <p>{{ form.email.label }}</p>{{ form.email }}<br>
+                <p>{{ form.username.label }}</p>{{ form.username }}<br>
+                <p>{{ form.specialization.label }}</p>
                 <select name="specialization" required>
                     <option value="" disabled selected>Select...</option>
                     <option value="Radiologist">Radiologist</option>
                     <option value="Neurologist">Neurologist</option>
                 </select><br>
-                {{ form.password.label }}{{ form.password }}<br>
-                {{ form.pass_confirm.label }}{{ form.pass_confirm }}<br>
+                <p>{{ form.password.label }}</p>{{ form.password }}<br>
+                <p>{{ form.pass_confirm.label }}</p>{{ form.pass_confirm }}<br>
                 
                 {{ form.submit() }}
             </form>

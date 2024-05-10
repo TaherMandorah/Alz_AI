@@ -3,15 +3,25 @@
 {% block content %}
 
 <style>
-
     .card {
-        width: 60%;
+        display: flex;
+        justify-content: space-between; /* Ensures space between content and image */
+        /* align-items: center; Vertically center content */
         background: #f9f9f9;
         border: 1px solid #ddd;
         margin-top: 10px;
+        margin-left: 5%;
+        margin-right: 5%;
         padding: 15px;
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card-info {
+        flex: 1; /* Takes up remaining space */
+    }
+    .card-image {
+        flex-basis: 200px; /* Width of the image container */
+        text-align: center; /* Center the image */
     }
     .card-header {
         background: #e9ecef;
@@ -85,12 +95,19 @@
     <div class="card-container">
         {% for patient in patients | sort(attribute='date', reverse=true) %}
             <div class="card">
-                <div class="card-header">Scan Date: {{ patient.date.strftime('%Y/%m/%d %H:%M') }}</div>
-                <div class="card-body">
-                    <ul class="info-list">
-                        <li>Image: <img src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}" height="100" alt="Scan image of {{ patient_info.username }}"></li>
-                        <li>Doctor Name: {{ doctor_map[patient.id].username if patient.id in doctor_map else 'Unknown Doctor' }}</li>
-                    </ul>
+                <div class="card-info">
+                    <div class="card-header">Scan Date: {{ patient.date.strftime('%Y/%m/%d %H:%M') }}</div>
+                    <div class="card-body">
+                        <ul class="info-list">
+                            <li>Doctor Name: {{ doctor_map[patient.id].username if patient.id in doctor_map else 'Unknown Doctor' }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-image">
+                    <!-- Clickable image redirecting to the result page -->
+                    <a href="{{ url_for('patients.result', username_id=patient.patient_id) }}">
+                        <img src="{{ url_for('static', filename='profile_pics/' + patient.brain_img) }}" height="150" width="150" alt="Scan image of {{ patient_info.username }}">
+                    </a>
                 </div>
             </div>
         {% endfor %}

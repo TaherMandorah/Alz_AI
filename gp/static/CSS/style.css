@@ -2,17 +2,18 @@ html,
 body {
   height: 100%;
 }
+
+body {
+  background-color: #4a5d5e;
+  color: #ffffff;
+  font-size: 25px;
+}
 .welcome {
   font-size: 25px;
   margin-top: 0%;
   padding-top: 0%;
   padding-right: 20%;
   text-align: center;
-}
-body {
-  background-color: #4a5d5e;
-  color: #ffffff;
-  font-size: 25px;
 }
 
 /*For Desktop View */
@@ -75,8 +76,15 @@ justify-content: center;*/
     margin-bottom: 10%;
   }
   .inimg_con h2 {
+    margin-bottom:5%;
     margin-top: 3%;
     margin-left: 16%;
+    font-size: 25px;
+    padding-right: 20%;
+    text-align: center;
+  }
+  .inimg p{
+    margin-left: 20%;
   }
 }
 .inimg select {
@@ -157,7 +165,6 @@ justify-content: center;*/
 /* For Mobile Portrait View */
 @media screen and (max-device-width: 480px) and (orientation: portrait) {
 }
-
 /* registration */
 
 .container0 {
@@ -633,25 +640,26 @@ font-weight: 100;
 
 .PatientInf2 {
   padding: 1%;
-  margin-left: 6%;
+  margin-left: 25%;
   margin-bottom: 2%;
   border-radius: 40px;
   border: 5px solid #f8f8ec;
-  min-width: 37%;
   background-color: #f8f8ec;
   display: inline-block;
-  text-align: center; /* Center aligns the text within the border */
+  text-align: center;
+  width: 49%;
 }
 
 .PatientInf2 h1 {
-  padding: 5%;
+  padding: 2%;
   font-size: 3vh;
   color: #000000;
   text-align: left;
   display: inline-block;
   white-space: nowrap;
-  margin-left: 25px; /* Adjust as needed */
-} /* Adjust the value as needed */
+  margin-left: 25px;
+} /* Adjust as needed */
+ /* Adjust the value as needed */
 
 .PatientInf2 p {
   color: #000000;
@@ -687,13 +695,14 @@ font-weight: 100;
   overflow: hidden; /* Hide overflow content */
 }
 .Result h1 {
-  padding: 5%;
-  font-size: 5vh;
+  padding: 1%;
+  font-size: 4vh;
   color: #000000;
   text-align: left;
   white-space: nowrap;
-  margin-left: 25px; /* Adjust as needed */
-  list-style-type: none; /* Remove list dots */
+  margin-left: 45px;
+  list-style-type: none;
+  margin-top: 1%;
 }
 
 .h-container {

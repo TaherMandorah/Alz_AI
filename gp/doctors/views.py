@@ -60,9 +60,16 @@ def logout():
 @doctors.route("/request_list")
 @login_required
 def request_list():
-    requests = db.session.query(ScanRequest, PatientInfo).join(PatientInfo, ScanRequest.patient_id == PatientInfo.patient_id).filter(ScanRequest.requests == False).all()
+    # Query to join ScanRequest and PatientInfo, filter by unprocessed requests,
+    # and order by scan_date in descending order
+    requests = db.session.query(ScanRequest, PatientInfo) \
+        .join(PatientInfo, ScanRequest.patient_id == PatientInfo.patient_id) \
+        .filter(ScanRequest.requests == False) \
+        .order_by(ScanRequest.scan_date.desc()) \
+        .all()
     forms = {request.ScanRequest.id: SubmitRequestForm() for request in requests}
     return render_template("request_list.html", requests=requests, forms=forms)
+
 
 
 

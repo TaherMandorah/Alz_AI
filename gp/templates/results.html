@@ -12,9 +12,6 @@
   <div class="PatientInf2">
     <h1>Name:&nbsp;&nbsp;{{ patient_info.username }}</h1>
     <h1>Patient ID:&nbsp;&nbsp;{{ patient.patient_id }}</h1>
-    <h1>Scanned by: Dr.{{doctor.username}}</h1>
-    <h1>Scanned on: {{ patient.date.strftime('%Y-%m-%d') }} </h1>
-    <h1>Time:{{ patient.date.strftime('%H:%M:%S') }} </h1>
     <h1>Age:&nbsp;&nbsp;{{ patient_info.age }}</h1>
     <h1>Gender:&nbsp;&nbsp;{{ patient_info.gender }}</h1>
     <!-- <h1>{{ patient.classifier }}</h1>
@@ -33,6 +30,9 @@
     </div>
     <h1> Classifier:&nbsp; {{ patient.classifier }}</h1>
     <h1> Accuracy:&nbsp;{{ patient.accuracy }}%</h1>
+    <h1>Scanned by: Dr.{{doctor.username}}</h1>
+    <h1>Scanned on: {{ patient.date.strftime('%Y-%m-%d') }} </h1>
+    <h1>Time:{{ patient.date.strftime('%H:%M:%S') }} </h1>
     
     <!-- Modal -->
     <div id="modal01" class="modal" onclick="closeModal()">
